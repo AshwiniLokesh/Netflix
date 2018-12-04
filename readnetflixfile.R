@@ -1,0 +1,1 @@
+netflix = read.csv("netflix.csv")
