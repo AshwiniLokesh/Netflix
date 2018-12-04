@@ -1,0 +1,13 @@
+Private Sub CommandButton1_Click()
+total_no_rows = Worksheets("Sheet1").Cells(Rows.Count, 2).End(xlUp).Row
+movieId = Worksheets("Sheet1").Cells(2, 1).Value
+For i = 3 To total_no_rows
+    If Worksheets("Sheet1").Cells(i, 2) <> "" Then
+        Worksheets("Sheet1").Cells(i, 3).Value = movieId
+    Else
+        movieId = Worksheets("Sheet1").Cells(i, 1).Value
+    End If
+Next i
+
+
+End Sub
