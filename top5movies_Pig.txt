@@ -1,0 +1,19 @@
+ratings = LOAD '/user/maria_dev/Netflix/first_ten_movies_1.csv' USING PigStorage(',') AS (customerID:int, movieID:int, rating:int);
+
+metadata = LOAD '/user/maria_dev/Netflix/movie_titles.csv' USING PigStorage(',') AS (movieID:int, year:chararray, movieTitle:chararray);
+
+nameLookup = FOREACH metadata GENERATE movieID, movieTitle;
+
+groupedRatings = GROUP ratings BY movieID;
+
+avgRatings = FOREACH groupedRatings GENERATE group AS movieID, AVG(ratings.rating) AS avgRating, COUNT(ratings.rating) AS numRatings;
+
+goodMovies = FILTER avgRatings BY avgRating > 3.2;
+
+namedMovies = JOIN goodMovies BY movieID, nameLookup BY movieID;
+
+finalResults = FOREACH namedMovies GENERATE nameLookup::movieTitle AS movieName, goodMovies::avgRating, goodMovies::numRatings as numRatings;
+
+finalResultsSorted = ORDER finalResults BY avgRating DESC;
+
+DUMP finalResultsSorted;
